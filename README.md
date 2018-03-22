@@ -263,7 +263,6 @@ function properties_save( $post_id ) {
 				if ( '' != $_POST['gallery']['image_url'][$i]) 
 				{
 					$gallery_data['image_url'][]  = $_POST['gallery']['image_url'][ $i ];
-					/* $gallery_data['text'][]  = $_POST['gallery']['text'][ $i ]; */
 				}
 			}
 	 
@@ -279,4 +278,34 @@ function properties_save( $post_id ) {
 		}
 }
 add_action( 'save_post', 'properties_save' );
+```
+### Display the images on frontend ###
+
+Image URLs which saved on post edit page are stored in WordPress database as post meta. You can get them by using get_post_meta() function.
+
+#### Usage in a loop ####
+
+```
+// Start the Loop.
+while ( have_posts() ) : the_post(); ?>
+    <!--Photos-->
+    <div class="photos">
+        <div class="container">
+            <h2>Photos</h2>
+            <div class="row">
+		<?php					
+		$postData = get_post_meta( get_the_ID() );		
+		$photos_query = $postData['gallery_data'][0];
+		$photos_array = unserialize($photos_query);
+		$url_array = $photos_array['image_url'];
+		$count = sizeof($url_array);				
+		for( $i=0; $i<$count; $i++ ){ ?>		
+		<div class="img_single_box">
+		   <img class="gallery-img" src="<?php echo $url_array[$i]; ?>" alt=""/>
+		</div>	
+		<?php } ?>
+	    </div>
+        </div>
+    </div>
+<?php endwhile; ?>
 ```
