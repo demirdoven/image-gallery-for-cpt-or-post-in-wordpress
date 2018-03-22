@@ -1,7 +1,15 @@
-# Cool image gallery for custom post types and posts
-Drag & drop sorting and multiple images feature
+# Cool image gallery for custom post types and posts #
+With drag & drop sorting and multiple images feature
 
-Meta box and the fields:
+![alt text](http://g.recordit.co/WBD0FDfvAa.gif "Image gallery for post and custom post types")
+
+### Description ###
+
+You can add image gallery function to your post/cpt edit page easily. After images are loaded and you save post, you can use the image urls as custom fields in anywhere in your theme.
+
+### Installation (Add following codes to functions.php) ###
+
+Creating meta box for 'houses' custom post type:
 ```
 function add_gallery_img_func(){
 	add_meta_box(
@@ -14,6 +22,10 @@ function add_gallery_img_func(){
 	);
 }
 add_action( 'admin_init', 'add_gallery_img_func' );
+```
+
+Meta box callback function:
+```
 function gallery_img_func_callback(){
 	global $post;
 	$gallery_data = get_post_meta( $post->ID, 'gallery_data', true );
@@ -65,21 +77,8 @@ function gallery_img_func_callback(){
 }
 ```
 
-Head scripts:
+Scripts and styles for header:
 ```
-function head_scripts(){ 
-        global $post;
-        if($post->post_type == 'houses'){
-			echo '<script defer src="https://use.fontawesome.com/releases/v5.0.8/js/solid.js" integrity="sha384-+Ga2s7YBbhOD6nie0DzrZpJes+b2K1xkpKxTFFcx59QmVPaSA8c7pycsNaFwUK6l" crossorigin="anonymous"></script>
-				  <link href = "https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css"
-         rel = "stylesheet">
-				  <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/fontawesome.js" integrity="sha384-7ox8Q2yzO/uWircfojVuCQOZl+ZZBg2D2J5nkpLqzH1HY0C1dHlTKIbpRz/LG23c" crossorigin="anonymous"></script>
-				  <script src = "https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>';
-		}
-}
-add_action('admin_head-post.php', 'head_scripts');
-add_action('admin_head-post-new.php', 'head_scripts');
-
 function gallery_print_func()
 {
     global $post;
@@ -162,6 +161,10 @@ function gallery_print_func()
 		border: none;
 	  }
     </style>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/solid.js" integrity="sha384-+Ga2s7YBbhOD6nie0DzrZpJes+b2K1xkpKxTFFcx59QmVPaSA8c7pycsNaFwUK6l" crossorigin="anonymous"></script>
+    <link href = "https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css" rel = "stylesheet">
+    <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/fontawesome.js" integrity="sha384-7ox8Q2yzO/uWircfojVuCQOZl+ZZBg2D2J5nkpLqzH1HY0C1dHlTKIbpRz/LG23c" crossorigin="anonymous"></script>
+    <script src = "https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
     <script type="text/javascript">
         function remove_img(value) {
             var parent=jQuery(value).parent().parent();
@@ -234,7 +237,7 @@ add_action( 'admin_head-post.php', 'gallery_print_func' );
 add_action( 'admin_head-post-new.php', 'gallery_print_func' );
 ```
 
-Save the fields:
+Saving the urls:
 ```
 function properties_save( $post_id ) {
 		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
