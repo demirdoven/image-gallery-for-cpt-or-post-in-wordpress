@@ -9,14 +9,14 @@ You can add image gallery function to your post/cpt edit page easily. After imag
 
 ### Installation (Add following codes to functions.php) ###
 
-Creating meta box for 'houses' custom post type:
+Creating meta box for 'house' custom post type:
 ```
 function add_gallery_img_func(){
 	add_meta_box(
 		'post_gallery',
 		'Gallery Pictures',
 		'gallery_img_func_callback',
-		'houses', // Change post type name
+		'house', // Change post type name
 		'normal',
 		'core'
 	);
@@ -27,6 +27,7 @@ add_action( 'admin_init', 'add_gallery_img_func' );
 Meta box callback function:
 ```
 function gallery_img_func_callback(){
+	wp_nonce_field( basename(__FILE__), 'sample_nonce' );
 	global $post;
 	$gallery_data = get_post_meta( $post->ID, 'gallery_data', true );
 ?>
@@ -82,7 +83,7 @@ Scripts and styles for header:
 function gallery_print_func()
 {
     global $post;
-    if( 'houses' != $post->post_type )
+    if( 'house' != $post->post_type )
         return;
     ?>  
     <style type="text/css">
@@ -243,15 +244,19 @@ function properties_save( $post_id ) {
 		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
 			return;
 		}
-		if ( ! isset( $_POST['properties_nonce'] ) || ! wp_verify_nonce( $_POST['properties_nonce'], '_properties_nonce' ) ) {
-			return;
+		$is_autosave = wp_is_post_autosave( $post_id );
+		$is_revision = wp_is_post_revision( $post_id );
+		$is_valid_nonce = ( isset( $_POST[ 'sample_nonce' ] ) && wp_verify_nonce( $_POST[ 'sample_nonce' ], basename( __FILE__ ) ) ) ? 'true' : 'false';
+		
+		if ( $is_autosave || $is_revision || !$is_valid_nonce ) {
+				return;
 		}
 		if ( ! current_user_can( 'edit_post', $post_id ) ) {
 			return;
 		}
 
 		// Correct post type
-		if ( 'houses' != $_POST['post_type'] ) // here you can set post type name
+		if ( 'house' != $_POST['post_type'] ) // here you can set post type name
 			return;
 	 
 		if ( $_POST['gallery'] ) 
