@@ -286,18 +286,25 @@ Image URLs which saved on post edit page are stored in WordPress database as pos
 
 ```
 <?php
-global $post;	
-$photos_query = get_post_meta( $post->ID, 'gallery_data', true );
-$photos_array = unserialize($photos_query);
-$url_array = $photos_array['image_url'];
-$count = sizeof($url_array);				
-for( $i=0; $i<$count; $i++ ){
-   ?>		
-   <div class="img_single_box">
-      <img class="gallery-img" src="<?php echo $url_array[$i]; ?>" alt=""/>
-   </div>	
-   <?php 
+
+global $post;
+if( metadata_exists( 'post', $post->ID, 'gallery_data' ) ){
+    $photos_query = get_post_meta( $post->ID, 'gallery_data', true );
+    $photos_array = maybe_unserialize($photos_query);
+    $url_array = $photos_array['image_url'];
+    $count = sizeof($url_array);
+
+    for( $i=0; $i<$count; $i++ ){
+        ?>
+        <div class="img_single_box">
+            <img class="gallery-img" src="<?php echo $url_array[$i]; ?>" alt=""/>
+        </div>
+        <?php 
+        }
+} else {
+    echo __('Add images to gallery first','yourtheme');
 }
+
 ?>
 	   
 ```
