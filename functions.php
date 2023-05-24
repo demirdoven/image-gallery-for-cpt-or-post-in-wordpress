@@ -233,27 +233,33 @@ function property_gallery_save( $post_id ) {
 	}
 
 	// Correct post type
-	if ( 'house' != $_POST['post_type'] ) // here you can set the post type name
-		return;
 
-	if ( $_POST['gallery'] ){
+	if (! isset($_POST['post_type'])) { // if post is new and post_type is not set
+	
+	} else {
 
-		// Build array for saving post meta
-		$gallery_data = array();
-		for ($i = 0; $i < count( $_POST['gallery']['image_url'] ); $i++ ){
-			if ( '' != $_POST['gallery']['image_url'][$i]){
-				$gallery_data['image_url'][]  = $_POST['gallery']['image_url'][ $i ];
+		if ( 'house' != $_POST['post_type'] ) // here you can set the post type name
+			return;
+
+		if ( $_POST['gallery'] ){
+
+			// Build array for saving post meta
+			$gallery_data = array();
+			for ($i = 0; $i < count( $_POST['gallery']['image_url'] ); $i++ ){
+				if ( '' != $_POST['gallery']['image_url'][$i]){
+					$gallery_data['image_url'][]  = $_POST['gallery']['image_url'][ $i ];
+				}
 			}
-		}
 
-		if ( $gallery_data ) 
-			update_post_meta( $post_id, 'gallery_data', $gallery_data );
-		else 
+			if ( $gallery_data ) 
+				update_post_meta( $post_id, 'gallery_data', $gallery_data );
+			else 
+				delete_post_meta( $post_id, 'gallery_data' );
+		} 
+		// Nothing received, all fields are empty, delete option
+		else{
 			delete_post_meta( $post_id, 'gallery_data' );
-	} 
-	// Nothing received, all fields are empty, delete option
-	else{
-		delete_post_meta( $post_id, 'gallery_data' );
+		}
 	}
 }
 add_action( 'save_post', 'property_gallery_save' );
